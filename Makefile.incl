@@ -30,11 +30,13 @@ STYLECHECKFILES	:= $(shell find . -name '*.[ch]')
 OPT		:= -Os -g
 CSTD		?= -std=c99
 
+ASMFILES = $(TOP_DIR)/startup_stm32f103.s
+
 TEMP1 		= $(patsubst %.c,%.o,$(SRCFILES))
 TEMP2		= $(patsubst %.asm,%.o,$(TEMP1))
-OBJS 		= $(patsubst %.cpp,%.o,$(TEMP2))
+OBJS 		= $(patsubst %.cpp,%.o,$(TEMP2)) $(patsubst %.s,%.o,$(ASMFILES))
 
-LDSCRIPT	?= $(TOP_DIR)/stm32f103c8t6.ld
+LDSCRIPT	?= $(TOP_DIR)/ld/bootloader_20_c6.ld
 
 TGT_CFLAGS	+= $(OPT) $(CSTD)
 TGT_CFLAGS	+= $(ARCH_FLAGS)
@@ -56,7 +58,7 @@ TGT_CPPFLAGS	+= -I$(OPENCM3_DIR)/include
 TGT_CPPFLAGS	+= -I$(TOP_DIR)/rtos/libwwg/include
 
 TGT_LDFLAGS	+= --static -nostartfiles
-TGT_LDFLAGS	+= -T$(LDSCRIPT)
+TGT_LDFLAGS	+= -T$(LDSCRIPT) -L $(TOP_DIR)/ld
 TGT_LDFLAGS	+= $(ARCH_FLAGS)
 TGT_LDFLAGS	+= -Wl,-Map=$(*).map
 TGT_LDFLAGS	+= -Wl,--gc-sections
@@ -121,6 +123,9 @@ print-%:
 %.o: %.asm
 	$(AS) $(ASFLAGS) -o $*.o -c $<
 
+%.o: %.s
+	$(CC) $(ASFLAGS) -c $< -o $@
+
 clean:
 	@#printf "  CLEAN\n"
 	$(RM) *.o *.d generated.* $(OBJS) $(patsubst %.o,%.d,$(OBJS))
@@ -137,8 +142,13 @@ flash:	$(BINARY).bin
 bigflash: $(BINARY).bin
 	$(STFLASH) --flash=128k write $(BINARY).bin 0x8000000
 
+upload: $(BINARY).bin
+	dfu-util -a 2 -w -D $(BINARY).bin &
+
 .PHONY: images clean elf bin hex srec list all
 
--include $(OBJS:.o=.d)
+-include $(wildcard $(OBJS:.o=.d))
+
+.PRECIOUS: $(TOP_DIR)/startup_stm32f103.s
 
 # End
