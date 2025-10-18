@@ -6,7 +6,7 @@
 .global Default_Handler
 .global _estack
 
-_estack = 0x20005000  /* end of 20 KB SRAM */
+_estack = 0x20002800  /* end of 10 KB SRAM */
 
 .section .isr_vector,"a",%progbits
 .word _estack

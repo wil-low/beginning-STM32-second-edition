@@ -17,6 +17,13 @@ vApplicationStackOverflowHook(xTaskHandle *pxTask,signed portCHAR *pcTaskName) {
 	for(;;);
 }
 
+/* Called if malloc from FreeRTOS heap fails (configUSE_MALLOC_FAILED_HOOK == 1) */
+void vApplicationMallocFailedHook(void)
+{
+    taskDISABLE_INTERRUPTS();
+    for( ;; );
+}
+
 static void
 task1(void *args) {
 	int i;
@@ -32,13 +39,15 @@ task1(void *args) {
 
 int
 main(void) {
-
 	rcc_clock_setup_pll(&rcc_hse_configs[RCC_CLOCK_HSE8_72MHZ]);
 	rcc_periph_clock_enable(RCC_GPIOC);
 	gpio_set_mode(GPIOC,GPIO_MODE_OUTPUT_2_MHZ,GPIO_CNF_OUTPUT_PUSHPULL,GPIO13);
 
 	xTaskCreate(task1,"LED",100,NULL,configMAX_PRIORITIES-1,NULL);
-	vTaskStartScheduler();
+
+    gpio_set(GPIOC, GPIO13);
+
+    vTaskStartScheduler();
 	for (;;);
 
 	return 0;
