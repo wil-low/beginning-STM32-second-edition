@@ -12,6 +12,7 @@ static void gpio_setup(void) {
     /* Set GPIO13 (in GPIO port C) to 'output push-pull'. */
     gpio_set_mode(GPIOC, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL,
                   GPIO13);
+    gpio_set(GPIOC, GPIO13);
 }
 
 int main(void) {
@@ -30,6 +31,7 @@ int main(void) {
             Handler.DelayUs(1000000);
         }
     */
+
     for (;;) {
         for (uint16_t i = 0; i < 10000; i++) {
             uint8_t Buffer[4] = {0};
@@ -39,7 +41,7 @@ int main(void) {
             Buffer[0] = (i / 1000) % 10;
             Buffer[1] |= TM1638DecimalPoint;
             TM1638_SetMultipleLEDs(&Handler, i / 10);
-            TM1638_SetMultipleDigit_HEX(&Handler, Buffer, 0, 4);
+            TM1638_SetMultipleDigit_HEX(&Handler, Buffer, 2, 4);
             Handler.DelayUs(1);
         }
     }

@@ -290,6 +290,8 @@ TM1638_Result_t TM1638_ScanKeys(TM1638_Handler_t *Handler, uint32_t *Keys);
 TM1638_Result_t TM1638_SetMultipleLEDs(TM1638_Handler_t *Handler,
                                        uint8_t LEDData);
 
+uint8_t siekoo(uint8_t c);
+
 #ifdef __cplusplus
 }
 #endif

@@ -60,59 +60,138 @@
 #define ShowTurnOff 0x00 // 0b00000000
 #define ShowTurnOn 0x08  // 0b00001000
 
-/* Private variables
- * ------------------------------------------------------------*/
-/**
- * @brief  Convert HEX number to Seven-Segment code
- */
-const uint8_t HexTo7Seg[40] = {
-    0x3F, // 0
-    0x06, // 1
-    0x5B, // 2
-    0x4F, // 3
-    0x66, // 4
-    0x6D, // 5
-    0x7D, // 6
-    0x07, // 7
-    0x7F, // 8
-    0x6F, // 9
-    0x77, // A
-    0x7c, // b
-    0x39, // C
-    0x5E, // d
-    0x79, // E
-    0x71, // F
-    0x6F, // g
-    0x3D, // G
-    0x74, // h
-    0x76, // H
-    0x05, // i
-    0x06, // I
-    0x0D, // j
-    0x30, // l
-    0x38, // L
-    0x54, // n
-    0x37, // N
-    0x5C, // o
-    0x3F, // O
-    0x73, // P
-    0x67, // q
-    0x50, // r
-    0x6D, // S
-    0x78, // t
-    0x1C, // u
-    0x3E, // U
-    0x66, // y
-    0x08, // _
-    0x40, // -
-    0x01  // Overscore
-};
-
 /**
  ==================================================================================
                            ##### Private Functions #####
  ==================================================================================
  */
+
+uint8_t siekoo(uint8_t c) {
+    // https://fakoo.de/en/siekoo.html
+    switch (c) {
+    case '0':
+        return 0b00111111;
+    case '1':
+        return 0b00000110;
+    case '2':
+        return 0b01011011;
+    case '3':
+        return 0b01001111;
+    case '4':
+        return 0b01100110;
+    case '5':
+        return 0b01101101;
+    case '6':
+        return 0b01111101;
+    case '7':
+        return 0b00000111;
+    case '8':
+        return 0b01111111;
+    case '9':
+        return 0b01101111;
+    case 'a':
+        return 0b01011111;
+    case 'b':
+        return 0b01111100;
+    case 'c':
+        return 0b01011000;
+    case 'd':
+        return 0b01011110;
+    case 'e':
+        return 0b01111001;
+    case 'f':
+        return 0b01110001;
+    case 'g':
+        return 0b00111101;
+    case 'h':
+        return 0b01110100;
+    case 'i':
+        return 0b00010001;
+    case 'j':
+        return 0b00001101;
+    case 'k':
+        return 0b01110101;
+    case 'l':
+        return 0b00111000;
+    case 'm':
+        return 0b01010101;
+    case 'n':
+        return 0b01010100;
+    case 'o':
+        return 0b01011100;
+    case 'p':
+        return 0b01110011;
+    case 'q':
+        return 0b01100111;
+    case 'r':
+        return 0b01010000;
+    case 's':
+        return 0b00101101;
+    case 't':
+        return 0b01111000;
+    case 'u':
+        return 0b00011100;
+    case 'v':
+        return 0b00101010;
+    case 'w':
+        return 0b01101010;
+    case 'x':
+        return 0b00010100;
+    case 'y':
+        return 0b01101110;
+    case 'z':
+        return 0b00011011;
+    case ' ':
+        return 0b00000000;
+    case '.':
+        return 0b00010000;
+    case ',':
+        return 0b00001100;
+    case ';':
+        return 0b00001010;
+    case ':':
+        return 0b00001001;
+    case '=':
+        return 0b01001000;
+    case '+':
+        return 0b01000110;
+    case '/':
+        return 0b01010010;
+    case 0x5c:
+        return 0b01100100; // backslash
+    case '!':
+        return 0b01101011;
+    case '?':
+        return 0b01001011;
+    case '_':
+        return 0b00001000;
+    case '-':
+        return 0b01000000;
+    case '^':
+        return 0b00000001;
+    case '"':
+        return 0b00100000;
+    case '\'':
+        return 0b00100010;
+    case '%':
+        return 0b00100100;
+    case '(':
+        return 0b00111001;
+    case ')':
+        return 0b00001111;
+    case '@':
+        return 0b00010111;
+    case '*':
+        return 0b01001001;
+    case '#':
+        return 0b00110110;
+    case '<':
+        return 0b00100001;
+    case '>':
+        return 0b00000011;
+    }
+    return 0b10000000;
+}
 
 static inline void TM1638_StartComunication(TM1638_Handler_t *Handler) {
     Handler->StbWrite(0);
@@ -329,37 +408,37 @@ TM1638_Result_t TM1638_SetSingleDigit_HEX(TM1638_Handler_t *Handler,
     DigitData &= 0x7F;
 
     if (DigitData <= 15) {
-        DigitDataHEX = HexTo7Seg[DigitData] | DecimalPoint;
+        DigitDataHEX = siekoo(DigitData + '0') | DecimalPoint;
     } else {
         switch (DigitData) {
         case 'A':
         case 'a':
-            DigitDataHEX = HexTo7Seg[0x0A] | DecimalPoint;
+            DigitDataHEX = siekoo('a') | DecimalPoint;
             break;
 
         case 'B':
         case 'b':
-            DigitDataHEX = HexTo7Seg[0x0B] | DecimalPoint;
+            DigitDataHEX = siekoo('b') | DecimalPoint;
             break;
 
         case 'C':
         case 'c':
-            DigitDataHEX = HexTo7Seg[0x0C] | DecimalPoint;
+            DigitDataHEX = siekoo('c') | DecimalPoint;
             break;
 
         case 'D':
         case 'd':
-            DigitDataHEX = HexTo7Seg[0x0D] | DecimalPoint;
+            DigitDataHEX = siekoo('d') | DecimalPoint;
             break;
 
         case 'E':
         case 'e':
-            DigitDataHEX = HexTo7Seg[0x0E] | DecimalPoint;
+            DigitDataHEX = siekoo('e') | DecimalPoint;
             break;
 
         case 'F':
         case 'f':
-            DigitDataHEX = HexTo7Seg[0x0F] | DecimalPoint;
+            DigitDataHEX = siekoo('f') | DecimalPoint;
             break;
 
         default:
@@ -397,38 +476,40 @@ TM1638_Result_t TM1638_SetMultipleDigit_HEX(TM1638_Handler_t *Handler,
     for (uint8_t i = 0; i < Count; i++) {
         DecimalPoint = DigitData[i] & 0x80;
 
-        if ((DigitData[i] & 0x7F) >= 0 && (DigitData[i] & 0x7F) <= 15) {
-            DigitDataHEX[i] = HexTo7Seg[DigitData[i] & 0x7F] | DecimalPoint;
+        uint8_t Digit = DigitData[i] & 0x7F;
+
+        if (Digit <= 15) {
+            DigitDataHEX[i] = siekoo(Digit + '0') | DecimalPoint;
         } else {
-            switch (DigitData[i] & 0x7F) {
+            switch (Digit) {
             case 'A':
             case 'a':
-                DigitDataHEX[i] = HexTo7Seg[0x0A] | DecimalPoint;
+                DigitDataHEX[i] = siekoo('a') | DecimalPoint;
                 break;
 
             case 'B':
             case 'b':
-                DigitDataHEX[i] = HexTo7Seg[0x0B] | DecimalPoint;
+                DigitDataHEX[i] = siekoo('b') | DecimalPoint;
                 break;
 
             case 'C':
             case 'c':
-                DigitDataHEX[i] = HexTo7Seg[0x0C] | DecimalPoint;
+                DigitDataHEX[i] = siekoo('c') | DecimalPoint;
                 break;
 
             case 'D':
             case 'd':
-                DigitDataHEX[i] = HexTo7Seg[0x0D] | DecimalPoint;
+                DigitDataHEX[i] = siekoo('d') | DecimalPoint;
                 break;
 
             case 'E':
             case 'e':
-                DigitDataHEX[i] = HexTo7Seg[0x0E] | DecimalPoint;
+                DigitDataHEX[i] = siekoo('e') | DecimalPoint;
                 break;
 
             case 'F':
             case 'f':
-                DigitDataHEX[i] = HexTo7Seg[0x0F] | DecimalPoint;
+                DigitDataHEX[i] = siekoo('f') | DecimalPoint;
                 break;
 
             default:
@@ -467,154 +548,12 @@ TM1638_Result_t TM1638_SetMultipleDigit_CHAR(TM1638_Handler_t *Handler,
     uint8_t DigitDataHEX[10];
     uint8_t DecimalPoint = 0;
 
+    if (Count > 8)
+        Count = 8;
+
     for (uint8_t i = 0; i < Count; i++) {
         DecimalPoint = DigitData[i] & 0x80;
-
-        // numbers 0 - 9
-        if ((DigitData[i] & 0x7F) >= (uint8_t)'0' &&
-            (DigitData[i] & 0x7F) <= (uint8_t)'9') {
-            DigitDataHEX[i] =
-                HexTo7Seg[(DigitData[i] - 48) & 0x7F] | DecimalPoint;
-        } else {
-            switch (DigitData[i] & 0x7F) {
-            case 'A':
-            case 'a':
-                DigitDataHEX[i] = HexTo7Seg[0x0A] | DecimalPoint;
-                break;
-
-            case 'B':
-            case 'b':
-                DigitDataHEX[i] = HexTo7Seg[0x0B] | DecimalPoint;
-                break;
-
-            case 'C':
-            case 'c':
-                DigitDataHEX[i] = HexTo7Seg[0x0C] | DecimalPoint;
-                break;
-
-            case 'D':
-            case 'd':
-                DigitDataHEX[i] = HexTo7Seg[0x0D] | DecimalPoint;
-                break;
-
-            case 'E':
-            case 'e':
-                DigitDataHEX[i] = HexTo7Seg[0x0E] | DecimalPoint;
-                break;
-
-            case 'F':
-            case 'f':
-                DigitDataHEX[i] = HexTo7Seg[0x0F] | DecimalPoint;
-                break;
-
-            case 'g':
-                DigitDataHEX[i] = HexTo7Seg[0x10] | DecimalPoint;
-                break;
-
-            case 'G':
-                DigitDataHEX[i] = HexTo7Seg[0x11] | DecimalPoint;
-                break;
-
-            case 'h':
-                DigitDataHEX[i] = HexTo7Seg[0x12] | DecimalPoint;
-                break;
-
-            case 'H':
-                DigitDataHEX[i] = HexTo7Seg[0x13] | DecimalPoint;
-                break;
-
-            case 'i':
-                DigitDataHEX[i] = HexTo7Seg[0x14] | DecimalPoint;
-                break;
-
-            case 'I':
-                DigitDataHEX[i] = HexTo7Seg[0x15] | DecimalPoint;
-                break;
-
-            case 'j':
-            case 'J':
-                DigitDataHEX[i] = HexTo7Seg[0x16] | DecimalPoint;
-                break;
-
-            case 'l':
-                DigitDataHEX[i] = HexTo7Seg[0x17] | DecimalPoint;
-                break;
-
-            case 'L':
-                DigitDataHEX[i] = HexTo7Seg[0x18] | DecimalPoint;
-                break;
-
-            case 'n':
-                DigitDataHEX[i] = HexTo7Seg[0x19] | DecimalPoint;
-                break;
-
-            case 'N':
-                DigitDataHEX[i] = HexTo7Seg[0x1A] | DecimalPoint;
-                break;
-
-            case 'o':
-                DigitDataHEX[i] = HexTo7Seg[0x1B] | DecimalPoint;
-                break;
-
-            case 'O':
-                DigitDataHEX[i] = HexTo7Seg[0x1C] | DecimalPoint;
-                break;
-
-            case 'p':
-            case 'P':
-                DigitDataHEX[i] = HexTo7Seg[0x1D] | DecimalPoint;
-                break;
-
-            case 'q':
-            case 'Q':
-                DigitDataHEX[i] = HexTo7Seg[0x1E] | DecimalPoint;
-                break;
-
-            case 'r':
-            case 'R':
-                DigitDataHEX[i] = HexTo7Seg[0x1F] | DecimalPoint;
-                break;
-
-            case 's':
-            case 'S':
-                DigitDataHEX[i] = HexTo7Seg[0x20] | DecimalPoint;
-                break;
-
-            case 't':
-            case 'T':
-                DigitDataHEX[i] = HexTo7Seg[0x21] | DecimalPoint;
-                break;
-
-            case 'u':
-                DigitDataHEX[i] = HexTo7Seg[0x22] | DecimalPoint;
-                break;
-
-            case 'U':
-                DigitDataHEX[i] = HexTo7Seg[0x23] | DecimalPoint;
-                break;
-
-            case 'y':
-            case 'Y':
-                DigitDataHEX[i] = HexTo7Seg[0x24] | DecimalPoint;
-                break;
-
-            case '_':
-                DigitDataHEX[i] = HexTo7Seg[0x25] | DecimalPoint;
-                break;
-
-            case '-':
-                DigitDataHEX[i] = HexTo7Seg[0x26] | DecimalPoint;
-                break;
-
-            case '~':
-                DigitDataHEX[i] = HexTo7Seg[0x27] | DecimalPoint;
-                break;
-
-            default:
-                DigitDataHEX[i] = 0;
-                break;
-            }
-        }
+        DigitDataHEX[i] = siekoo(DigitData[i] & 0x7F) | DecimalPoint;
     }
 
     return TM1638_SetMultipleDigit(Handler, (const uint8_t *)DigitDataHEX,
