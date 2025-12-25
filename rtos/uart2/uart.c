@@ -20,6 +20,23 @@
 
 static QueueHandle_t uart_txq;		// TX queue for UART
 
+extern void vApplicationStackOverflowHook(xTaskHandle *pxTask,signed portCHAR *pcTaskName);
+extern void vApplicationMallocFailedHook(void);
+
+void
+vApplicationStackOverflowHook(xTaskHandle *pxTask,signed portCHAR *pcTaskName) {
+	(void)pxTask;
+	(void)pcTaskName;
+	for(;;);
+}
+
+/* Called if malloc from FreeRTOS heap fails (configUSE_MALLOC_FAILED_HOOK == 1) */
+void vApplicationMallocFailedHook(void)
+{
+    taskDISABLE_INTERRUPTS();
+    for( ;; );
+}
+
 /*********************************************************************
  * Configure and initialize USART1:
  *********************************************************************/
@@ -31,7 +48,7 @@ uart_setup(void) {
 
 	// UART TX on PA9 (GPIO_USART1_TX)
 	gpio_set_mode(GPIOA,
-		GPIO_MODE_OUTPUT_50_MHZ,
+		GPIO_MODE_OUTPUT_2_MHZ,
 		GPIO_CNF_OUTPUT_ALTFN_PUSHPULL,
 		GPIO_USART1_TX);
 
@@ -88,7 +105,7 @@ demo_task(void *args __attribute__((unused))) {
 
 	for (;;) {
 		uart_puts("Now this is a message..\n\r");
-		uart_puts("  sent via FreeRTOS queues.\n\n\r");
+		uart_puts("  sent via FreeRTOS queues!!!\n\n\r");
 		vTaskDelay(pdMS_TO_TICKS(1000));
 	}
 }

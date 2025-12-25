@@ -22,6 +22,23 @@
 #include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/usart.h>
 
+extern void vApplicationStackOverflowHook(xTaskHandle *pxTask,signed portCHAR *pcTaskName);
+extern void vApplicationMallocFailedHook(void);
+
+void
+vApplicationStackOverflowHook(xTaskHandle *pxTask,signed portCHAR *pcTaskName) {
+	(void)pxTask;
+	(void)pcTaskName;
+	for(;;);
+}
+
+/* Called if malloc from FreeRTOS heap fails (configUSE_MALLOC_FAILED_HOOK == 1) */
+void vApplicationMallocFailedHook(void)
+{
+    taskDISABLE_INTERRUPTS();
+    for( ;; );
+}
+
 /*********************************************************************
  * Setup the UART
  *********************************************************************/
@@ -63,7 +80,7 @@ task1(void *args __attribute__((unused))) {
 
 	for (;;) {
 		gpio_toggle(GPIOC,GPIO13);
-		vTaskDelay(pdMS_TO_TICKS(200));
+		vTaskDelay(pdMS_TO_TICKS(50));
 		if ( ++c >= 'Z' ) {
 			uart_putc(c);
 			uart_putc('\r');
