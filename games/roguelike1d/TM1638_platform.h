@@ -20,11 +20,11 @@ extern "C" {
  * @brief  Specify IO Pins of AVR connected to TM1638
  */
 #define TM1638_CLK_GPIO GPIOB
-#define TM1638_CLK_PIN GPIO6
+#define TM1638_CLK_PIN GPIO12
 #define TM1638_DIO_GPIO GPIOB
-#define TM1638_DIO_PIN GPIO7
+#define TM1638_DIO_PIN GPIO13
 #define TM1638_STB_GPIO GPIOB
-#define TM1638_STB_PIN GPIO8
+#define TM1638_STB_PIN GPIO14
 
 /**
  ==================================================================================
