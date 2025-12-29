@@ -4,9 +4,13 @@
 
 BINARY		= roguelike1d
 SRCFILES	= \
+	debounce.c \
+	enemy.c \
+	game.c \
 	main.c \
-	TM1638_platform.c \
-	TM1638.c
+	player.c \
+	TM1638.c \
+	TM1638_platform.c
 
 all: elf bin
 
