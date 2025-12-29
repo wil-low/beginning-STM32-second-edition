@@ -152,6 +152,15 @@ TM1638_Result_t TM1638_ConfigDisplay(TM1638_Handler_t *Handler,
                                      uint8_t Brightness, uint8_t DisplayState);
 
 /**
+ * @brief  Clear 7-segment cells
+ * @param  Handler: Pointer to handler
+ *
+ * @retval TM1638_Result_t
+ *         - TM1638_OK: Operation was successful
+ */
+TM1638_Result_t TM1638_ClearDigits(TM1638_Handler_t *Handler);
+
+/**
  * @brief  Set data to single digit in 7-segment format
  * @param  Handler: Pointer to handler
  * @param  DigitData: Digit data
@@ -255,24 +264,15 @@ TM1638_Result_t TM1638_SetMultipleDigit_CHAR(TM1638_Handler_t *Handler,
  */
 
 /**
- * @brief  Scan all 24 keys connected to TM1638
- * @note
- *                   SEG1         SEG2         SEG3       ......      SEG8
- *                     |            |            |                      |
- *         K1  --  |K1_SEG1|    |K1_SEG2|    |K1_SEG3|    ......    |K1_SEG8|
- *         K2  --  |K2_SEG1|    |K2_SEG2|    |K2_SEG3|    ......    |K2_SEG8|
- *         K3  --  |K3_SEG1|    |K3_SEG2|    |K3_SEG3|    ......    |K3_SEG8|
- *
+ * @brief  Scan all 8 keys connected to TM1638
  * @param  Handler: Pointer to handler
  * @param  Keys: pointer to save key scan result
- *         - bit0=>K1_SEG1, bit1=>K1_SEG2, ..., bit7=>K1_SEG8,
- *         - bit8=>K2_SEG1, bit9=>K2_SEG2, ..., bit15=>K2_SEG8,
- *         - bit16=>K3_SEG1, bit17=>K3_SEG2, ..., bit23=>K3_SEG8,
+ *         - bit0=>K1_SEG1, bit1=>K1_SEG2, ..., bit7=>K1_SEG8
  *
  * @retval TM1638_Result_t
  *         - TM1638_OK: Operation was successful
  */
-TM1638_Result_t TM1638_ScanKeys(TM1638_Handler_t *Handler, uint32_t *Keys);
+TM1638_Result_t TM1638_ScanKeys(TM1638_Handler_t *Handler, uint8_t *Keys);
 
 /**
  ==================================================================================

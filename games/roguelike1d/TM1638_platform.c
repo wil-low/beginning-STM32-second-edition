@@ -72,7 +72,7 @@ static void TM1638_DioWrite(uint8_t Level) {
 }
 
 static uint8_t TM1638_DioRead(void) {
-    return gpio_get(TM1638_DIO_GPIO, TM1638_DIO_PIN);
+    return gpio_get(TM1638_DIO_GPIO, TM1638_DIO_PIN) ? 1 : 0;
 }
 
 static void TM1638_ClkWrite(uint8_t Level) {
